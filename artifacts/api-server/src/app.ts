@@ -1,5 +1,4 @@
 import express, { type Express } from "express";
-import cors from "cors";
 import pinoHttp from "pino-http";
 import router from "./routes";
 import { logger } from "./lib/logger";
@@ -26,31 +25,36 @@ app.use(
   }),
 );
 
-// --- CONFIGURAÇÃO DO CORS PRODUÇÃO ---
-const allowedOrigins = [
-  "https://contabilidadedellaretti.com",
-  "https://www.contabilidadedellaretti.com",
-  "https://dellaretti-frontend-dqwy-6hkq.onrender.com" // Mantido caso queira testar pelo link antigo do Render
-];
+// --- MIDDLEWARE DE CORS MANUAL (FORÇA BRUTA) ---
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    "https://contabilidadedellaretti.com",
+    "https://www.contabilidadedellaretti.com",
+    "https://dellaretti-frontend-dqwy-6hkq.onrender.com"
+  ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Permite requisições sem origem (como Postman, servidores locais ou chamadas internas)
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Bloqueado pelo CORS: Esta origem não é permitida."));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-// ---------------------------------------
+  // Se a origem da requisição estiver na lista, nós permitimos ela explicitamente
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else if (!origin) {
+    // Caso a requisição venha sem origem (servidor para servidor / Postman)
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+  
+  // Cabeçalhos essenciais para o funcionamento do painel admin
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With");
+
+  // Se o navegador enviar um OPTIONS (Preflight), responde com 200 OK imediatamente sem barrar
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
+// ------------------------------------------------
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
