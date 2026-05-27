@@ -2,7 +2,7 @@ import { pool } from "@workspace/db";
 import { logger } from "./logger";
 
 const MIGRATION_SQL = `
-CREATE TABLE IF NOT EXISTS dellaretti_leads (
+CREATE TABLE IF NOT EXISTS leads (
   id SERIAL PRIMARY KEY,
   tipo TEXT NOT NULL,
   estado TEXT,
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS dellaretti_leads (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS dellaretti_payments (
+CREATE TABLE IF NOT EXISTS payments (
   id TEXT PRIMARY KEY,
   method TEXT NOT NULL,
   status TEXT NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS dellaretti_payments (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS dellaretti_contacts (
+CREATE TABLE IF NOT EXISTS contacts (
   id SERIAL PRIMARY KEY,
   nome TEXT NOT NULL,
   email TEXT NOT NULL,

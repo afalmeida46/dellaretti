@@ -1,6 +1,6 @@
 import { pgTable, text, serial, timestamp, integer, jsonb } from "drizzle-orm/pg-core";
 
-export const leadsTable = pgTable("dellaretti_leads", {
+export const leadsTable = pgTable("leads", {
   id: serial("id").primaryKey(),
   tipo: text("tipo").notNull(),
   estado: text("estado"),
@@ -22,7 +22,7 @@ export const leadsTable = pgTable("dellaretti_leads", {
 export type Lead = typeof leadsTable.$inferSelect;
 export type InsertLead = typeof leadsTable.$inferInsert;
 
-export const paymentsTable = pgTable("dellaretti_payments", {
+export const paymentsTable = pgTable("payments", {
   id: text("id").primaryKey(),
   method: text("method").notNull(),
   status: text("status").notNull(),
@@ -41,7 +41,7 @@ export const paymentsTable = pgTable("dellaretti_payments", {
 export type Payment = typeof paymentsTable.$inferSelect;
 export type InsertPayment = typeof paymentsTable.$inferInsert;
 
-export const contactsTable = pgTable("dellaretti_contacts", {
+export const contactsTable = pgTable("contacts", {
   id: serial("id").primaryKey(),
   nome: text("nome").notNull(),
   email: text("email").notNull(),
