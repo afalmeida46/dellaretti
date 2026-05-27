@@ -6,3 +6,9 @@ id = "T0nO-DCVUsK_KpaEhPzp7"
 uri = "file://dellaretti-fix.tar.gz"
 type = "unspecified"
 title = "Arquivos corrigidos — Contact.tsx + AdminPage.tsx"
+
+[[outputs]]
+id = "nEwdkgrENoe7-HE0cW616"
+uri = "file://dellaretti-arquivos-alterados.tar.gz"
+type = "unspecified"
+title = "Arquivos Alterados — Dellaretti"
