@@ -5,6 +5,20 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// --- CORS NO TOPO ABSOLUTO DO ARQUIVO ---
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://contabilidadedellaretti.com");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// Logger e interpretadores de JSON vêm DEPOIS do CORS
 app.use(
   pinoHttp({
     logger,
@@ -24,23 +38,6 @@ app.use(
     },
   }),
 );
-
-// --- CABEÇALHOS DE CORS INJETADOS MANUALMENTE ---
-app.use((req, res, next) => {
-  // Em vez de validar dinamicamente, vamos responder diretamente para o seu domínio
-  res.setHeader("Access-Control-Allow-Origin", "https://contabilidadedellaretti.com");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With");
-
-  // Se o navegador fizer a pergunta prévia (OPTIONS), responde com sucesso 200 na hora
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
-// -------------------------------------------------
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
