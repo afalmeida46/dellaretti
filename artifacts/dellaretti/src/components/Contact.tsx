@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
+import { API_BASE } from "@/lib/api";
 
 interface FormData {
   nome: string;
@@ -68,7 +69,6 @@ function buildWhatsAppMessage(form: FormData): string {
 export default function Contact() {
   const [form, setForm] = useState<FormData>(emptyForm);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [sentForm, setSentForm] = useState<FormData>(emptyForm);
 
@@ -92,19 +92,14 @@ export default function Contact() {
     if (errors[name as keyof FormErrors]) setErrors((p) => ({ ...p, [name]: undefined }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    setLoading(true);
-    try {
-      const { API_BASE: apiBase } = await import("@/lib/api");
-      await fetch(`${apiBase}/api/contato`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-    } catch {}
-    setLoading(false);
+    fetch(`${API_BASE}/api/contato`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    }).catch(() => {});
     setSentForm({ ...form });
     setSent(true);
     setForm(emptyForm);
@@ -237,17 +232,10 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <button type="submit" disabled={loading}
-                  className="w-full py-3.5 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:translate-y-0"
+                <button type="submit"
+                  className="w-full py-3.5 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5"
                   style={{ background: "linear-gradient(135deg, #1f3d2b, #2e6b4d)" }}>
-                  {loading ? (
-                    <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/>
-                      <path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                    </svg>
-                  ) : (
-                    <><Send size={16} /> Enviar para os especialistas</>
-                  )}
+                  <Send size={16} /> Enviar para os especialistas
                 </button>
                 <p className="text-center text-gray-400 text-xs">Suas informações são protegidas conforme a LGPD.</p>
               </form>

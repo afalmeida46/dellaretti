@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "T0nO-DCVUsK_KpaEhPzp7"
+uri = "file://dellaretti-fix.tar.gz"
+type = "unspecified"
+title = "Arquivos corrigidos — Contact.tsx + AdminPage.tsx"
