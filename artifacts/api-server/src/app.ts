@@ -26,17 +26,17 @@ app.use(
   }),
 );
 
-// --- CONFIGURAÇÃO DO CORS ATUALIZADA ---
+// --- CONFIGURAÇÃO DO CORS PRODUÇÃO ---
 const allowedOrigins = [
-  "https://dellaretti-frontend-dqwy-6hkq.onrender.com",
   "https://contabilidadedellaretti.com",
-  "https://www.contabilidadedellaretti.com"
+  "https://www.contabilidadedellaretti.com",
+  "https://dellaretti-frontend-dqwy-6hkq.onrender.com" // Mantido caso queira testar pelo link antigo do Render
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Permite requisições sem origem (como Postman ou chamadas server-side)
+      // Permite requisições sem origem (como Postman, servidores locais ou chamadas internas)
       if (!origin) return callback(null, true);
       
       if (allowedOrigins.indexOf(origin) !== -1) {
