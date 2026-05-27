@@ -6,37 +6,51 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
-// --- 1. CONFIGURAÇÃO DE CORS NO TOPO ABSOLUTO ---
+// --- 1. BLOCO DE SEGURANÇA MÁXIMA PARA CORS ---
 const allowedOrigins = [
   "https://contabilidadedellaretti.com",
   "https://www.contabilidadedellaretti.com",
   "https://dellaretti-frontend-dqwy-6hkq.onrender.com"
 ];
 
+// Middleware manual nativo (Garante que os cabeçalhos entrem em absolutamente QUALQUER resposta)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    // Fallback seguro para o seu domínio principal caso a origin venha vazia
+    res.setHeader("Access-Control-Allow-Origin", "https://contabilidadedellaretti.com");
+  }
+
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+
+  // Intercepta imediatamente o Preflight do navegador (OPTIONS)
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// Middleware oficial do pacote CORS (Camada dupla de proteção)
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Se não houver origin (chamadas server-side ou ferramentas de teste), permite
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Bloqueado pelo CORS: Origem não permitida."));
-      }
-    },
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Accept", "X-Requested-With"],
-    optionsSuccessStatus: 200 // Força o status 200 para garantir que navegadores antigos aceitem o preflight
+    allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
+    optionsSuccessStatus: 200
   })
 );
 
-// Trata automaticamente as requisições OPTIONS de checagem prévia antes de passar pro Logger
+// Habilita pre-flight de CORS para todas as rotas explicitamente
 app.options("*", cors());
 // ------------------------------------------------
 
-// --- 2. DEMAIS MIDDLEWARES (VÊM DEPOIS DO CORS) ---
+// --- 2. DEMAIS MIDDLEWARES E CONFIGURAÇÕES ---
 app.use(
   pinoHttp({
     logger,
@@ -60,7 +74,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rotas do sistema
+// Vincula as rotas da API
 app.use("/api", router);
 
 export default app;
