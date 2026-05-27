@@ -12,3 +12,9 @@ id = "nEwdkgrENoe7-HE0cW616"
 uri = "file://dellaretti-arquivos-alterados.tar.gz"
 type = "unspecified"
 title = "Arquivos Alterados — Dellaretti"
+
+[[outputs]]
+id = "eyxQHxbaxK_TBVD_rLBDv"
+uri = "file://dellaretti-frontend-cpanel.tar.gz"
+type = "unspecified"
+title = "Frontend Pronto para cPanel"
