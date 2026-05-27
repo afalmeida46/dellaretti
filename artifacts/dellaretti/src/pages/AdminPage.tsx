@@ -88,6 +88,59 @@ export default function AdminPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"todos" | "Abrir Empresa" | "Trocar de Contador">("todos");
 
+  function normalizeContact(c: any): ContactMsg {
+    return {
+      id: c.id,
+      nome: c.nome,
+      email: c.email,
+      telefone: c.telefone,
+      ramo: c.ramo,
+      ramoDescricao: c.ramoDescricao ?? c.ramo_descricao,
+      faturamentoAnual: c.faturamentoAnual ?? c.faturamento_anual,
+      regimeTributario: c.regimeTributario ?? c.regime_tributario,
+      assunto: c.assunto,
+      mensagem: c.mensagem,
+      createdAt: c.createdAt ?? c.created_at,
+    };
+  }
+
+  function normalizeLead(l: any): Lead {
+    return {
+      id: l.id,
+      tipo: l.tipo,
+      estado: l.estado,
+      nome: l.nome,
+      telefone: l.telefone,
+      email: l.email,
+      ramo: l.ramo,
+      cpf: l.cpf,
+      nomeEmpresa: l.nomeEmpresa ?? l.nome_empresa,
+      previsaoFaturamento: l.previsaoFaturamento ?? l.previsao_faturamento,
+      funcionarios: l.funcionarios,
+      faturamentoAnual: l.faturamentoAnual ?? l.faturamento_anual,
+      regimeTributario: l.regimeTributario ?? l.regime_tributario,
+      tempoEmpresa: l.tempoEmpresa ?? l.tempo_empresa,
+      createdAt: l.createdAt ?? l.created_at,
+    };
+  }
+
+  function normalizePayment(p: any): Payment {
+    return {
+      id: p.id,
+      createdAt: p.createdAt ?? p.created_at,
+      method: p.method,
+      status: p.status,
+      planId: p.planId ?? p.plan_id,
+      planName: p.planName ?? p.plan_name,
+      planPrice: p.planPrice ?? p.plan_price ?? 0,
+      customerName: p.customerName ?? p.customer_name,
+      customerEmail: p.customerEmail ?? p.customer_email,
+      customerPhone: p.customerPhone ?? p.customer_phone,
+      customerCpf: p.customerCpf ?? p.customer_cpf,
+      pagbankId: p.pagbankId ?? p.pagbank_id,
+    };
+  }
+
   async function fetchAll() {
     setLoading(true);
     setError("");
@@ -99,14 +152,14 @@ export default function AdminPage() {
       ]);
       if (!leadsRes.ok) throw new Error("Unauthorized");
       const ld = await leadsRes.json();
-      setLeads(ld.leads || []);
+      setLeads((ld.leads || []).map(normalizeLead));
       if (paysRes.ok) {
         const pd = await paysRes.json();
-        setPayments(pd.payments || []);
+        setPayments((pd.payments || []).map(normalizePayment));
       }
       if (contactsRes.ok) {
         const cd = await contactsRes.json();
-        setContacts(cd.contacts || []);
+        setContacts((cd.contacts || []).map(normalizeContact));
       }
     } catch {
       setError("Erro ao carregar dados.");
