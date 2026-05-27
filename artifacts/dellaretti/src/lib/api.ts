@@ -1,3 +1,3 @@
 export const API_BASE =
   import.meta.env.VITE_API_URL ||
-  "https://dellaretti-api-dqwy.onrender.com";
+  "https://api.contabilidadedellaretti.com";
