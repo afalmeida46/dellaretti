@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>PagBank Final Test</title>
+    <script src="https://assets.pagseguro.com.br/checkout-sdk-js/rc/dist/pagseguro.min.js"></script>
+    <style>
+        body { font-family: system-ui; background: #1a1a1a; color: #eee; display: flex; justify-content: center; padding: 20px; }
+        .card { background: #2d2d2d; padding: 25px; border-radius: 12px; width: 400px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #444; border-radius: 6px; background: #1a1a1a; color: #fff; box-sizing: border-box; }
+        .btn-pay { width: 100%; padding: 15px; background: #00b140; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        #log { margin-top: 20px; padding: 10px; background: #000; border-radius: 5px; font-family: monospace; font-size: 11px; color: #0f0; max-height: 200px; overflow-y: auto; border: 1px solid #444; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h3>PagBank Direct Test</h3>
+    
+    <label style="font-size: 11px; color: #888;">TOKEN:</label>
+    <input type="text" id="token" value="616907f3-b6e9-4a08-a1ac-1446b45fd970e1b63eca43e593bc5955d3483ffe3f85dd94-f53b-4daa-87f9-c98bdfb871ae">
+
+    <select id="method" onchange="document.getElementById('card-info').classList.toggle('hidden', this.value === 'PIX')">
+        <option value="CARD">Cartão de Crédito</option>
+        <option value="PIX">PIX</option>
+    </select>
+
+    <div id="card-info">
+        <input type="text" id="num" placeholder="Número do Cartão">
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="exp" placeholder="MM/AA">
+            <input type="text" id="cvv" placeholder="CVV">
+        </div>
+        <input type="text" id="holder" placeholder="Nome no Cartão">
+        <label style="font-size: 12px;"><input type="checkbox" id="subs"> Recorrência (Assinatura)</label>
+        <input type="text" id="plan" class="hidden" placeholder="ID do Plano (PLN_...)">
+    </div>
+
+    <input type="text" id="cust_name" placeholder="Nome do Cliente">
+    <input type="text" id="cust_tax" placeholder="CPF (Só números)">
+    <input type="email" id="cust_mail" placeholder="E-mail">
+
+    <button class="btn-pay" onclick="executarPagamento()">PAGAR AGORA</button>
+
+    <div id="log">Console log...</div>
+</div>
+
+<script>
+    document.getElementById('subs').onchange = (e) => document.getElementById('plan').classList.toggle('hidden', !e.target.checked);
+
+    async function executarPagamento() {
+        const log = document.getElementById('log');
+        const token = document.getElementById('token').value;
+        const method = document.getElementById('method').value;
+        log.innerText = "Processando...";
+
+        try {
+            // 1. Pegar Public Key
+            const pkResp = await fetch('https://api.pagseguro.com/public-keys', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: "card" })
+            });
+            const pkData = await pkResp.json();
+            const publicKey = pkData.public_key;
+
+            let url = 'https://api.pagseguro.com/orders';
+            let body = {
+                customer: {
+                    name: document.getElementById('cust_name').value,
+                    email: document.getElementById('cust_mail').value,
+                    tax_id: document.getElementById('cust_tax').value
+                }
+            };
+
+            if (method === 'PIX') {
+                body.qr_codes = [{ amount: { value: 1000 } }];
+            } else {
+                // 2. Criptografar
+                const cardEnc = PagSeguro.encryptCard({
+                    publicKey: publicKey,
+                    holder: document.getElementById('holder').value,
+                    number: document.getElementById('num').value.replace(/\s/g, ''),
+                    expMonth: document.getElementById('exp').value.split('/')[0],
+                    expYear: "20" + document.getElementById('exp').value.split('/')[1],
+                    securityCode: document.getElementById('cvv').value
+                });
+
+                if (document.getElementById('subs').checked) {
+                    url = 'https://api.pagseguro.com/subscriptions';
+                    body.plan = { id: document.getElementById('plan').value };
+                    body.payment_method = { type: "CREDIT_CARD", card: { encrypted: cardEnc.encryptedCard } };
+                } else {
+                    body.charges = [{
+                        amount: { value: 1000, currency: "BRL" },
+                        payment_method: {
+                            type: "CREDIT_CARD", installments: 1, capture: true,
+                            card: { encrypted: cardEnc.encryptedCard }
+                        }
+                    }];
+                }
+            }
+
+            // 3. Enviar Ordem
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            const result = await response.json();
+            log.innerText = JSON.stringify(result, null, 2);
+
+        } catch (e) {
+            log.innerText = "ERRO: " + e.message + "\nVerifique se o CORS está desativado no seu navegador.";
+        }
+    }
+</script>
+</body>
+</html>

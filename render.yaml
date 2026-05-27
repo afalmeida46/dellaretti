@@ -1,0 +1,46 @@
+services:
+  # -----------------------------------------------
+  # Backend — API Node.js + MySQL
+  # -----------------------------------------------
+  - type: web
+    name: dellaretti-api
+    runtime: node
+    region: oregon 
+    plan: free # No Backend o plano "free" está correto para type: web
+    rootDir: hostgator-server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: ADMIN_TOKEN
+        sync: false
+      - key: PAGBANK_TOKEN
+        sync: false
+      - key: DISCORD_WEBHOOK_URL
+        sync: false
+
+  # -----------------------------------------------
+  # Frontend — React + Vite (site estático)
+  # -----------------------------------------------
+  - type: web
+    name: dellaretti-frontend
+    env: static
+    # A linha "plan: free" FOI REMOVIDA DAQUI (sites estáticos já são grátis por padrão)
+    buildCommand: bash build-frontend.sh
+    staticPublishPath: artifacts/dellaretti/dist/public
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://dellaretti-api.onrender.com

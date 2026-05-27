@@ -1,0 +1,204 @@
+preciso agora que adicione meu bot , <script type="text/javascript">
+  (function(d, t) {
+      var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+      v.onload = function() {
+        window.voiceflow.chat.load({
+          verify: { projectID: '69b90020db48f3de12cf7f36' },
+          url: 'https://general-runtime.voiceflow.com',
+          versionID: 'production',
+          voice: {
+            url: "https://runtime-api.voiceflow.com"
+          }
+        });
+      }
+      v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+  })(document, 'script');
+</script>
+
+somente adicionar ele , preciso tambem que voce adicione alguns bloqueadores de seguranca como bloqueio de inspecionar bloquei cntrl + u bloqueio de ataque via kali linux , toda vez que alguem tentar realizar alguma dessas coisas redirecione para esta imagem aqui  https://media.discordapp.net/attachments/699921419072438272/1491560475983609886/58d0f3a1-de55-48ea-96a5-6938a6563699.png?ex=69d82371&is=69d6d1f1&hm=f8765c8e48ca2b3e61394a7e034e1c1ca392250f0e46cd53291fdcdf819debdc&=&format=webp&quality=lossless&width=463&height=618
+
+bloqueios de invasao por ip etc
+
+🚀 server.js
+const express = require("express");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+
+const firewall = require("./security/firewall");
+
+const app = express();
+
+app.use(express.json());
+app.use(helmet());
+
+/* RATE LIMIT GLOBAL */
+app.use(rateLimit({
+    windowMs: 60 * 1000,
+    max: 100
+}));
+
+/* FIREWALL */
+app.use(firewall);
+
+/* RECEBER FINGERPRINT */
+app.post("/fp", (req, res) => {
+    res.sendStatus(200);
+});
+
+/* SITE */
+app.use(express.static("public"));
+
+app.listen(3000, () => {
+    console.log("🔥 Sistema rodando em http://localhost:3000");
+});
+🧠 security/utils.js
+function getIP(req) {
+    return (
+        req.headers['cf-connecting-ip'] ||
+        req.headers['x-forwarded-for']?.split(',')[0] ||
+        req.socket.remoteAddress ||
+        req.ip ||
+        "unknown"
+    );
+}
+
+module.exports = { getIP };
+🚨 security/discord.js
+const fetch = require("node-fetch");
+
+const WEBHOOK = "COLE_SEU_WEBHOOK_AQUI";
+
+async function sendDiscord(ip, motivo, req) {
+    try {
+        const data = {
+            username: "🚨 Firewall AI",
+            embeds: [
+                {
+                    title: "🚨 ATAQUE DETECTADO",
+                    color: 16711680,
+                    fields: [
+                        { name: "🌐 IP", value: ip, inline: true },
+                        { name: "⚠️ Motivo", value: motivo, inline: true },
+                        { name: "📍 URL", value: req.originalUrl || "N/A" },
+                        { name: "🖥 UA", value: req.headers['user-agent'] || "N/A" }
+                    ],
+                    timestamp: new Date()
+                }
+            ]
+        };
+
+        await fetch(WEBHOOK, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+    } catch (e) {
+        console.log("Erro webhook", e);
+    }
+}
+
+module.exports = { sendDiscord };
+🔐 security/firewall.js
+const { getIP } = require("./utils");
+const { sendDiscord } = require("./discord");
+
+const blacklist = new Set();
+const comportamento = {};
+
+function calcularRisco(req) {
+    const ua = (req.headers['user-agent'] || "").toLowerCase();
+    const url = req.url.toLowerCase();
+
+    let risco = 0;
+
+    const bots = ["sqlmap","nmap","nikto","masscan","zgrab","curl","wget","python"];
+    if (bots.some(b => ua.includes(b))) risco += 40;
+
+    if (!ua.includes("mozilla")) risco += 30;
+
+    if (url.includes("'") || url.includes("or 1=1") || url.includes("--")) risco += 50;
+
+    if (url.includes("/admin") || url.includes("/wp")) risco += 20;
+
+    return risco;
+}
+
+module.exports = async function firewall(req, res, next) {
+    const ip = getIP(req);
+
+    if (blacklist.has(ip)) {
+        return res.redirect("https://media.discordapp.net/attachments/699921419072438272/1491560475983609886/58d0f3a1-de55-48ea-96a5-6938a6563699.png");
+    }
+
+    const risco = calcularRisco(req);
+
+    /* comportamento */
+    if (!comportamento[ip]) {
+        comportamento[ip] = { count: 0 };
+    }
+
+    comportamento[ip].count++;
+
+    if (comportamento[ip].count > 120) {
+        blacklist.add(ip);
+        await sendDiscord(ip, "Flood detectado", req);
+
+        return res.redirect("https://media.discordapp.net/attachments/699921419072438272/1491560475983609886/58d0f3a1-de55-48ea-96a5-6938a6563699.png");
+    }
+
+    if (risco >= 60) {
+        blacklist.add(ip);
+
+        await sendDiscord(ip, `Ataque detectado (risco ${risco})`, req);
+
+        return res.redirect("https://media.discordapp.net/attachments/699921419072438272/1491560475983609886/58d0f3a1-de55-48ea-96a5-6938a6563699.png");
+    }
+
+    next();
+};
+🧬 public/index.html (Fingerprint + proteção front)
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seguro</title>
+
+    <script>
+    async function gerarFingerprint() {
+        const data = [
+            navigator.userAgent,
+            navigator.language,
+            screen.width,
+            screen.height
+        ].join("|");
+
+        const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(data));
+        const fp = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,"0")).join("");
+
+        fetch("/fp", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ fingerprint: fp })
+        });
+    }
+
+    gerarFingerprint();
+
+    /* BLOQUEIO INSPECIONAR */
+    setInterval(() => {
+        if (window.outerWidth - window.innerWidth > 160) {
+            window.location.href = "https://media.discordapp.net/attachments/699921419072438272/1491560475983609886/58d0f3a1-de55-48ea-96a5-6938a6563699.png";
+        }
+    }, 500);
+    </script>
+
+
+o resto dos bloqueios irei realizar via cloudfare,
+
+
+preciso tambem sincronizar meu pagamento fazendo uma area de pagamento bonita seguindo o padrao visual do site e adicionar meu gateway que e o pagbank
+
+a documentacao dele esta abaixohttps://developer.pagbank.com.br/reference/ irei utilizar carta de credito recorrente pois se trata de assinatura mensal e pix meu token do pagbank e este aqui
+
+616907f3-b6e9-4a08-a1ac-1446b45fd970e1b63eca43e593bc5955d3483ffe3f85dd94-f53b-4daa-87f9-c98bdfb871ae
+

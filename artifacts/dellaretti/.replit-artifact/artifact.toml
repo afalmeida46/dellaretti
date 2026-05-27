@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Contabilidade Dellaretti"
+version = "1.0.0"
+id = "artifacts/dellaretti"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 5001
+
+[services.development]
+run = "pnpm install --frozen-lockfile && pnpm --filter @workspace/dellaretti run dev"
+
+[services.production]
+build = [ "sh", "-c", "pnpm install --frozen-lockfile && pnpm --filter @workspace/dellaretti run build" ]
+publicDir = "artifacts/dellaretti/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "5001"
+BASE_PATH = "/"

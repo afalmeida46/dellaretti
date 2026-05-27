@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: dellaretti-api
+    runtime: node
+    region: oregon
+    plan: free
+    rootDir: .
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        generateValue: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: ADMIN_TOKEN
+        sync: false
+      - key: PAGBANK_TOKEN
+        sync: false
+      - key: DISCORD_WEBHOOK_URL
+        sync: false

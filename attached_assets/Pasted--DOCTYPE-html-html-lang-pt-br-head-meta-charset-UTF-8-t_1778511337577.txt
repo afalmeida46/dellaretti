@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste Pix PagBank</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #eceff1; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+        .btn-pix { background: #4fce5d; color: white; border: none; padding: 15px 30px; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        .btn-pix:disabled { background: #ccc; }
+        #status { margin-top: 20px; color: #555; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>PagBank Pix Sandbox</h2>
+    <p>Valor: <strong>R$ 10,00</strong></p>
+    <button id="btnPix" class="btn-pix" onclick="gerarPix()">GERAR PAGAMENTO</button>
+    <div id="status">Aguardando...</div>
+</div>
+
+<script>
+    async function gerarPix() {
+        const btn = document.getElementById('btnPix');
+        const status = document.getElementById('status');
+        
+        btn.disabled = true;
+        status.innerText = "Solicitando ao servidor local...";
+
+        const payload = {
+            "reference_id": "PEDIDO-" + Date.now(),
+            "customer": {
+                "name": "Jose Testador",
+                "email": "test@sandbox.pagseguro.com.br",
+                "tax_id": "12345678909",
+                "phone": { "country": "55", "area": "11", "number": "999999999" }
+            },
+            "items": [{
+                "name": "Produto Teste",
+                "quantity": 1,
+                "unit_amount": 1000
+            }],
+            "payment_methods": [{ "type": "PIX" }],
+            "customer_modifiable": true
+        };
+
+        try {
+            // Chamamos o NOSSO servidor, não o do PagBank diretamente
+            const response = await fetch('http://localhost:3000/criar-checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (data.links) {
+                const link = data.links.find(l => l.rel === 'PAY').href;
+                status.innerText = "Sucesso! Redirecionando...";
+                window.location.href = link;
+            } else {
+                throw new Error(JSON.stringify(data));
+            }
+        } catch (err) {
+            status.innerHTML = `<span style="color:red">Erro: ${err.message}</span>`;
+            btn.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>

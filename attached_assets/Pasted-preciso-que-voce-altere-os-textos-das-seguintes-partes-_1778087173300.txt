@@ -1,0 +1,55 @@
+preciso que voce altere os textos das seguintes partes do site , 
+
+a parte onde comeca o site no quem somos ira alterar para este texto aqui 
+
+Meio Século de Lastro: O Peso da Nossa Assinatura
+Com 50 anos de operação ininterrupta, nós atravessamos todas as crises e reformas fiscais do Brasil. Não somos aventureiros testando modelos contábeis com o seu patrimônio.
+Colocar seu CNPJ sob o nosso guarda-chuva significa blindar sua empresa com o peso institucional de meio século perante o Fisco, guiado por uma consultoria sênior com mais de 23 anos na linha de frente da engenharia tributária.
+a seccao 1 e o inicio do site a parte onde fica o texto da abertura do cnpj ate a gestao contabil conte com a gente. ira ser alterado para isto daqui
+ 
+Sua estrutura tributária atual está drenando o lucro da sua empresa?
+A contabilidade tradicional foca em gerar guias de impostos. Nós focamos em blindar o seu patrimônio, antecipar os impactos da Nova Reforma Tributária e recuperar a margem de lucro do seu negócio.
+Consultoria Sênior com 23 anos de expertise e uma infraestrutura com mais de 50 anos de lastro no mercado.
+[Botão CTA:] Diagnóstico de Risco e Margem (Apenas para empresas com faturamento acima de R$ X)
+
+agora a seccao 2 ela e a parte de contabilidade especializada em postos de gasolina e ira ser alterado para isto
+
+[SEÇÃO 2: NICHO DE ALTA COMPLEXIDADE - POSTOS DE COMBUSTÍVEIS]
+Engenharia Tributária para Postos de Combustíveis e Lojas de Conveniência
+O setor de combustíveis não perdoa amadorismo. Um erro na apuração de ICMS-ST ou do PIS/COFINS monofásico significa dinheiro deixado na mesa ou risco iminente de autuação pela ANP e SEFAZ.
+Nós não fazemos apenas a "contabilidade" do seu posto. Nós aplicamos inteligência fiscal contínua para garantir:
+Risco Zero: Conformidade total com ANP, SEFAZ e controle rigoroso da DCP.
+Recuperação de Margem: Parametrização cirúrgica de ST e produtos monofásicos para você pagar o mínimo legal possível.
+Blindagem Trabalhista: Gestão estratégica da folha de frentistas e operadores para mitigar passivos.
+
+a seccao 3 e a parte de blindagem Patrimonial Holding e Planejamento Sucessório
+
+[SEÇÃO 3: O GATILHO DA URGÊNCIA (AMEAÇA SWOT)]
+Advisory de Transição: A Nova Reforma Tributária (CBS/IBS) vai esmagar quem não se preparar.
+Não espere 2027 chegar para descobrir que sua margem desapareceu. Nossa equipe analisa os mais de 400 artigos da nova lei cruzando com os arquivos XML e o histórico contábil da sua empresa.
+Simulação em Tempo Real: Veja hoje exatamente quanto você pagará de imposto nos próximos 5 anos.
+Adaptação de Holdings: Identificação de ineficiências nas suas estruturas atuais antes que o imposto suba e os créditos sejam perdidos.
+Ajuste sua rota hoje para não quebrar no futuro.
+
+agora a seccao 4 e a parte de advisory de Transição para a nova reforma tributária
+
+[SEÇÃO 4: PROTEÇÃO DE LEGADO]
+Blindagem Patrimonial, Holding e Sucessão
+Construir patrimônio leva uma vida. Perdê-lo por falta de estrutura jurídica é trágico.
+Implementamos arquiteturas jurídicas e societárias impenetráveis para proteger os ativos da sua família e da sua empresa contra credores e riscos operacionais.
+Economia Real: Redução drástica da carga tributária na transmissão de bens e prevenção de ITBI desnecessário.
+Segurança Sucessória: Planejamento robusto com usufruto e gestão de participações, garantindo que o seu legado passe para as próximas gerações sem conflitos e sem dilapidação pelo Estado.
+
+agora a seccao 5 e a parte de nossos servicos 
+
+[SEÇÃO 5: COMO OPERAMOS (Substituindo a lista de serviços baratos)]
+Nossos Pilares de Atuação e Gestão de Risco
+Não entregamos "pacotes contábeis". Entregamos soluções de alto impacto:
+Auditoria e Compliance Fiscal: Monitoramento contínuo para economia de impostos e compliance absoluto.
+Planejamento Tributário Agressivo (e Legal): Maximização de lucros via Lucro Real e Presumido.
+Gestão Estratégica de DP: Mitigação de riscos trabalhistas por desconhecimento da legislação.
+
+
+
+na seccao 1 o texto devera ficar abaixo do botao , e mover os 2 botoes para o header fixo do site adicionando nos 3 pontinhos , e adicionar o novo cta da seccao
+a seccao 1 devera vir acima do novo quem somos , ela vai ser a capa do site , e o cta deve levar direto ao formulario de contato , suba a parte do contato do site ela esta la em baixo nosso foco e pegar varios leads para entrarmos em contato , e faca com que ao enviar as mensagens fiquem todas salvas no painel admin de meu site , nao quero nada demonstrativo quero tudo funcionando perfeitamente sem erros de forma profissional!

@@ -1,0 +1,49 @@
+CREATE TABLE IF NOT EXISTS `dellaretti_leads` (
+  `id`                    INT UNSIGNED      NOT NULL AUTO_INCREMENT,
+  `tipo`                  VARCHAR(100)      NOT NULL,
+  `estado`                VARCHAR(50)       DEFAULT NULL,
+  `nome`                  VARCHAR(255)      DEFAULT NULL,
+  `telefone`              VARCHAR(30)       DEFAULT NULL,
+  `email`                 VARCHAR(255)      DEFAULT NULL,
+  `ramo`                  VARCHAR(255)      DEFAULT NULL,
+  `cpf`                   VARCHAR(20)       DEFAULT NULL,
+  `nome_empresa`          VARCHAR(255)      DEFAULT NULL,
+  `previsao_faturamento`  VARCHAR(100)      DEFAULT NULL,
+  `funcionarios`          VARCHAR(50)       DEFAULT NULL,
+  `faturamento_anual`     VARCHAR(100)      DEFAULT NULL,
+  `regime_tributario`     VARCHAR(100)      DEFAULT NULL,
+  `tempo_empresa`         VARCHAR(100)      DEFAULT NULL,
+  `raw`                   JSON              DEFAULT NULL,
+  `created_at`            DATETIME          NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `dellaretti_payments` (
+  `id`               VARCHAR(255)     NOT NULL,
+  `method`           VARCHAR(50)      NOT NULL,
+  `status`           VARCHAR(50)      NOT NULL,
+  `plan_id`          VARCHAR(100)     DEFAULT NULL,
+  `plan_name`        VARCHAR(255)     DEFAULT NULL,
+  `plan_price`       INT              DEFAULT 0,
+  `customer_name`    VARCHAR(255)     DEFAULT NULL,
+  `customer_email`   VARCHAR(255)     DEFAULT NULL,
+  `customer_phone`   VARCHAR(30)      DEFAULT NULL,
+  `customer_cpf`     VARCHAR(20)      DEFAULT NULL,
+  `pagbank_id`       VARCHAR(255)     DEFAULT NULL,
+  `pagbank_raw`      JSON             DEFAULT NULL,
+  `created_at`       DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `dellaretti_contacts` (
+  `id`                 INT UNSIGNED    NOT NULL AUTO_INCREMENT,
+  `nome`               VARCHAR(255)    NOT NULL,
+  `email`              VARCHAR(255)    NOT NULL,
+  `telefone`           VARCHAR(30)     NOT NULL,
+  `ramo`               VARCHAR(255)    DEFAULT NULL,
+  `ramo_descricao`     TEXT            DEFAULT NULL,
+  `faturamento_anual`  VARCHAR(100)    DEFAULT NULL,
+  `regime_tributario`  VARCHAR(100)    DEFAULT NULL,
+  `assunto`            VARCHAR(255)    DEFAULT NULL,
+  `mensagem`           TEXT            DEFAULT NULL,
+  `created_at`         DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
